@@ -1,0 +1,24 @@
+[
+  {
+    "key": "example.joke",
+    "url": "https://official-joke-api.appspot.com/random_joke",
+    "type": "rest",
+    "method": "GET",
+    "cacheTTL": 60000,
+    "mapping": {
+      "setup": "setup",
+      "punchline": "punchline",
+      "type": "type"
+    }
+  },
+  {
+    "key": "example.ip",
+    "url": "https://api.ipify.org?format=json",
+    "type": "rest",
+    "method": "GET",
+    "cacheTTL": 300000,
+    "mapping": {
+      "address": "ip"
+    }
+  }
+]
