@@ -1,5 +1,5 @@
 {
-  "name": "@datavault/core",
+  "name": "@banditintinc/datavault",
   "version": "0.1.0",
   "description": "Framework-agnostic smart cache and observer data service. Fetch, cache, map, and broadcast any data source to any consumer — as a library or a microservice.",
   "keywords": ["cache", "observer", "data", "websocket", "rest", "polling", "typescript"],
@@ -7,8 +7,14 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dpardinistudios/datavault"
+    "url": "https://github.com/BanditIntInc/DataVault"
   },
+  "files": [
+    "dist/lib",
+    "dist/core",
+    "!dist/core/__tests__",
+    "!dist/core/cache/__tests__"
+  ],
   "main": "./dist/lib/index.js",
   "module": "./dist/lib/index.mjs",
   "types": "./dist/lib/index.d.ts",
