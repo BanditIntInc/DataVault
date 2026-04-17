@@ -1,8 +1,16 @@
 {
   "name": "@banditintinc/datavault",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Framework-agnostic smart cache and observer data service. Fetch, cache, map, and broadcast any data source to any consumer — as a library or a microservice.",
-  "keywords": ["cache", "observer", "data", "websocket", "rest", "polling", "typescript"],
+  "keywords": [
+    "cache",
+    "observer",
+    "data",
+    "websocket",
+    "rest",
+    "polling",
+    "typescript"
+  ],
   "author": "David Pardini",
   "license": "MIT",
   "repository": {
@@ -27,22 +35,28 @@
   },
   "dependencies": {
     "express": "^4.19.0",
+    "minio": "^8.0.7",
     "ws": "^8.17.0"
   },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "testMatch": ["**/__tests__/**/*.test.ts"],
-    "moduleFileExtensions": ["ts", "js"]
+    "testMatch": [
+      "**/__tests__/**/*.test.ts"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ]
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "@types/node": "^20.0.0",
     "@types/express": "^4.17.0",
+    "@types/jest": "^29.0.0",
+    "@types/node": "^20.0.0",
     "@types/ws": "^8.5.0",
-    "ts-node": "^10.9.0",
     "jest": "^29.0.0",
     "ts-jest": "^29.0.0",
-    "@types/jest": "^29.0.0"
+    "ts-node": "^10.9.0",
+    "typescript": "^5.4.0"
   }
 }

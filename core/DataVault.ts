@@ -1,4 +1,4 @@
-import { IApiDefinition } from './interfaces/IApiDefinition';
+import { IApiDefinition, IMinioConfig } from './interfaces/IApiDefinition';
 import { IObserver } from './interfaces/IObserver';
 import { CacheController } from './cache/CacheController';
 import { ICacheObserver } from './cache/interfaces/ICacheObserver';
@@ -10,13 +10,14 @@ import { StorageFactory, StorageType } from './cache/factory/StorageFactory';
 
 export interface DataVaultOptions {
   storage?: StorageType | 'auto';
+  minio?: IMinioConfig;
 }
 
 export class DataVault {
   private cache: CacheController;
   private definitions = new DefinitionRegistry();
   private observers = new ObserverRegistry();
-  private fetcher = new Fetcher();
+  private fetcher: Fetcher;
   private cacheObserver: ICacheObserver;
 
   constructor(options: DataVaultOptions = {}) {
@@ -26,6 +27,7 @@ export class DataVault {
         : StorageFactory.create(options.storage);
 
     this.cache = new CacheController(adapter);
+    this.fetcher = new Fetcher(options.minio);
 
     // Held so it can be unsubscribed in destroy()
     this.cacheObserver = {
@@ -78,8 +80,8 @@ export class DataVault {
       return cached.data;
     }
 
-    // Cache miss — fetch once for rest; websocket/poll already watching
-    if (definition.type === 'rest' || definition.type === 'poll') {
+    // Cache miss — fetch once for rest/minio; websocket/poll already watching
+    if (definition.type === 'rest' || definition.type === 'poll' || definition.type === 'minio') {
       const raw = await this.fetcher.fetchOnce(definition);
       const mapped = this.mapData(definition, raw);
       await this.cache.set(definition.key, mapped, definition.cacheTTL ?? 0);
@@ -99,7 +101,7 @@ export class DataVault {
 
     await this.cache.delete(key);
 
-    if (definition.type === 'rest' || definition.type === 'poll') {
+    if (definition.type === 'rest' || definition.type === 'poll' || definition.type === 'minio') {
       const raw = await this.fetcher.fetchOnce(definition);
       const mapped = this.mapData(definition, raw);
       await this.cache.set(key, mapped, definition.cacheTTL ?? 0);

@@ -31,7 +31,7 @@ export function validateDefinitionUrl(url: string): string | null {
     return `URL targets a private or loopback address which is not allowed.`;
   }
 
-  return null; // valid
+  return null;
 }
 
 export function validateDefinition(def: unknown): string | null {
@@ -40,13 +40,18 @@ export function validateDefinition(def: unknown): string | null {
   const d = def as Record<string, unknown>;
 
   if (!d.key || typeof d.key !== 'string') return 'Definition must have a string "key".';
-  if (!d.url || typeof d.url !== 'string') return 'Definition must have a string "url".';
-  if (!d.type || !['rest', 'websocket', 'poll'].includes(d.type as string)) {
-    return 'Definition "type" must be "rest", "websocket", or "poll".';
+  if (!d.type || !['rest', 'websocket', 'poll', 'minio'].includes(d.type as string)) {
+    return 'Definition "type" must be "rest", "websocket", "poll", or "minio".';
   }
 
-  const urlError = validateDefinitionUrl(d.url as string);
-  if (urlError) return urlError;
+  if (d.type === 'minio') {
+    if (!d.bucket || typeof d.bucket !== 'string') return 'MinIO definitions must have a string "bucket".';
+    if (!d.objectKey || typeof d.objectKey !== 'string') return 'MinIO definitions must have a string "objectKey".';
+  } else {
+    if (!d.url || typeof d.url !== 'string') return 'Definition must have a string "url".';
+    const urlError = validateDefinitionUrl(d.url as string);
+    if (urlError) return urlError;
+  }
 
   if (d.type === 'poll') {
     const interval = d.pollInterval as number | undefined;
@@ -59,5 +64,5 @@ export function validateDefinition(def: unknown): string | null {
     return 'cacheTTL must be a non-negative number.';
   }
 
-  return null; // valid
+  return null;
 }

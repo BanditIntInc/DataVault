@@ -1,4 +1,5 @@
-import { IApiDefinition } from './interfaces/IApiDefinition';
+import { IApiDefinition, IMinioConfig } from './interfaces/IApiDefinition';
+import { MinioAdapter } from './adapters/MinioAdapter';
 
 export type FetchCallback = (data: unknown) => void;
 
@@ -12,10 +13,16 @@ export class Fetcher {
   private polls = new Map<string, ReturnType<typeof setInterval>>();
   private reconnectTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private destroyed = false;
+  private minioAdapter = new MinioAdapter();
+
+  constructor(private minioConfig?: IMinioConfig) {}
 
   async fetchOnce(definition: IApiDefinition): Promise<unknown> {
     if (definition.type === 'rest' || definition.type === 'poll') {
       return this.fetchRest(definition);
+    }
+    if (definition.type === 'minio') {
+      return this.minioAdapter.fetchObject(definition, this.minioConfig);
     }
     throw new Error(`fetchOnce is not supported for transport type "${definition.type}". Use watch() instead.`);
   }
@@ -31,7 +38,7 @@ export class Fetcher {
   stopWatching(key: string): void {
     const socket = this.sockets.get(key);
     if (socket) {
-      socket.onclose = null; // prevent reconnect on intentional close
+      socket.onclose = null;
       socket.close();
       this.sockets.delete(key);
     }
@@ -57,6 +64,10 @@ export class Fetcher {
   }
 
   private async fetchRest(definition: IApiDefinition): Promise<unknown> {
+    if (!definition.url) {
+      throw new Error(`[datavault] "url" is required for transport type "${definition.type}" on key "${definition.key}".`);
+    }
+
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
@@ -90,6 +101,10 @@ export class Fetcher {
     reconnectDelay: number = WS_RECONNECT_BASE_MS
   ): void {
     if (this.destroyed) return;
+    if (!definition.url) {
+      onError?.(new Error(`[datavault] "url" is required for websocket transport on key "${definition.key}".`));
+      return;
+    }
     this.sockets.delete(definition.key);
 
     const socket = new WebSocket(definition.url);
@@ -110,7 +125,6 @@ export class Fetcher {
       this.sockets.delete(definition.key);
       if (this.destroyed) return;
 
-      // Exponential backoff reconnect
       const nextDelay = Math.min(reconnectDelay * 2, WS_RECONNECT_MAX_MS);
       const timer = setTimeout(() => {
         this.reconnectTimers.delete(definition.key);
