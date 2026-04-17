@@ -8,18 +8,18 @@ import { Fetcher } from './Fetcher';
 import { Mapper } from './Mapper';
 import { StorageFactory, StorageType } from './cache/factory/StorageFactory';
 
-export interface DataServiceOptions {
+export interface DataVaultOptions {
   storage?: StorageType | 'auto';
 }
 
-export class DataService {
+export class DataVault {
   private cache: CacheController;
   private definitions = new DefinitionRegistry();
   private observers = new ObserverRegistry();
   private fetcher = new Fetcher();
   private cacheObserver: ICacheObserver;
 
-  constructor(options: DataServiceOptions = {}) {
+  constructor(options: DataVaultOptions = {}) {
     const adapter =
       !options.storage || options.storage === 'auto'
         ? StorageFactory.createBestAvailable()
@@ -54,7 +54,7 @@ export class DataService {
           await this.cache.set(definition.key, mapped, definition.cacheTTL ?? 0);
           this.observers.notify(definition.key, mapped);
         },
-        (err) => console.error(`[DataService] ${err.message}`)
+        (err) => console.error(`[datavault] ${err.message}`)
       );
     }
   }
@@ -66,7 +66,7 @@ export class DataService {
   ): Promise<unknown> {
     const definition = this.definitions.lookup(key);
     if (!definition) {
-      throw new Error(`[DataService] No definition registered for key "${key}"`);
+      throw new Error(`[datavault] No definition registered for key "${key}"`);
     }
 
     if (observer && !options.once) {
@@ -94,7 +94,7 @@ export class DataService {
   async refresh(key: string): Promise<void> {
     const definition = this.definitions.lookup(key);
     if (!definition) {
-      throw new Error(`[DataService] No definition registered for key "${key}"`);
+      throw new Error(`[datavault] No definition registered for key "${key}"`);
     }
 
     await this.cache.delete(key);

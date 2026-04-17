@@ -11,9 +11,9 @@ npm install @banditintinc/datavault
 ## Quick start
 
 ```typescript
-import { DataService } from '@banditintinc/datavault';
+import { DataVault } from '@banditintinc/datavault';
 
-const ds = new DataService({ storage: 'indexeddb' });
+const ds = new DataVault({ storage: 'indexeddb' });
 
 ds.registerDefinition({
   key: 'users',

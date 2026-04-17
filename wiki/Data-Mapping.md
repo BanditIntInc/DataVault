@@ -1,6 +1,6 @@
 # Data Mapping
 
-When an upstream API returns data, DataService can reshape it before storing and broadcasting it. Two mechanisms are available: **mapping** (declarative field extraction) and **transform** (arbitrary function).
+When an upstream API returns data, DataVault can reshape it before storing and broadcasting it. Two mechanisms are available: **mapping** (declarative field extraction) and **transform** (arbitrary function).
 
 Both are optional. If neither is provided, the raw response is stored and broadcast as-is.
 
@@ -112,7 +112,7 @@ flowchart LR
 
 ## Using Mapper directly
 
-`Mapper` is a static utility you can use independently of `DataService`:
+`Mapper` is a static utility you can use independently of `DataVault`:
 
 ```typescript
 import { Mapper } from './core/Mapper';

@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express';
-import { DataService } from '../core/DataService';
+import { DataVault } from '../core/DataVault';
 import { IApiDefinition } from '../core/interfaces/IApiDefinition';
 import { validateDefinition } from './validateDefinition';
 import { VERSION, LICENSE, AUTHOR } from '../core/version';
 
-export function createHttpRouter(dataService: DataService): Router {
+export function createHttpRouter(dataService: DataVault): Router {
   const definitions = dataService.getDefinitions();
   const router = Router();
 

@@ -85,14 +85,14 @@ const adapter = StorageFactory.create('session');
 
 ## IndexedDbAdapter
 
-Backed by `window.indexedDB`. Opens (or creates) a database named `DataServiceCache` with a single object store named `entries`.
+Backed by `window.indexedDB`. Opens (or creates) a database named `DataVaultCache` with a single object store named `entries`.
 
 ```typescript
 const adapter = StorageFactory.create('indexeddb');
 ```
 
 **Database schema:**
-- Database name: `DataServiceCache`
+- Database name: `DataVaultCache`
 - Schema version: `1`
 - Object store: `entries` with `keyPath: 'key'`
 
@@ -112,17 +112,17 @@ const adapter = StorageFactory.create('indexeddb');
 ### Explicit selection
 
 ```typescript
-const ds = new DataService({ storage: 'indexeddb' });
-const ds = new DataService({ storage: 'local' });
-const ds = new DataService({ storage: 'session' });
-const ds = new DataService({ storage: 'memory' });
+const ds = new DataVault({ storage: 'indexeddb' });
+const ds = new DataVault({ storage: 'local' });
+const ds = new DataVault({ storage: 'session' });
+const ds = new DataVault({ storage: 'memory' });
 ```
 
 ### Auto-selection (`'auto'` or omit)
 
 ```typescript
-const ds = new DataService(); // defaults to auto
-const ds = new DataService({ storage: 'auto' });
+const ds = new DataVault(); // defaults to auto
+const ds = new DataVault({ storage: 'auto' });
 ```
 
 Priority: `IndexedDB` → `LocalStorage` → `SessionStorage` → `MemoryAdapter`

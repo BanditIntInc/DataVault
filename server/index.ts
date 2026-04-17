@@ -1,6 +1,6 @@
 import http from 'http';
 import express from 'express';
-import { DataService } from '../core/DataService';
+import { DataVault } from '../core/DataVault';
 import { createHttpRouter } from './HttpAdapter';
 import { WsAdapter } from './WsAdapter';
 import { loadDefinitions } from './config';
@@ -11,7 +11,7 @@ const DEFINITIONS_FILE = process.env.DEFINITIONS_FILE ?? './definitions.json';
 const STORAGE = (process.env.STORAGE ?? 'memory') as 'memory' | 'local' | 'session' | 'indexeddb';
 
 // Bootstrap
-const dataService = new DataService({ storage: STORAGE });
+const dataService = new DataVault({ storage: STORAGE });
 
 // Load definitions from file and register
 const defs = loadDefinitions(DEFINITIONS_FILE);

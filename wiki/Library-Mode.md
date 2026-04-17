@@ -1,25 +1,25 @@
 # Library Mode
 
-In library mode DataService runs entirely inside your app's process. No server, no network hop — just import and use.
+In library mode DataVault runs entirely inside your app's process. No server, no network hop — just import and use.
 
 ## Install
 
 ```bash
-npm install   # from the DataService directory
+npm install   # from the DataVault directory
 ```
 
 ## Import
 
 ```typescript
-import { DataService } from './lib';
+import { DataVault } from './lib';
 // or directly:
-import { DataService } from './core/DataService';
+import { DataVault } from './core/DataVault';
 ```
 
 ## Setup
 
 ```typescript
-const ds = new DataService({ storage: 'auto' });
+const ds = new DataVault({ storage: 'auto' });
 ```
 
 `'auto'` selects the best available backend for the current environment. See [[Storage-Adapters]] for details.
@@ -30,9 +30,9 @@ const ds = new DataService({ storage: 'auto' });
 
 ```typescript
 import { useEffect, useState } from 'react';
-import { DataService } from './lib';
+import { DataVault } from './lib';
 
-const ds = new DataService({ storage: 'indexeddb' });
+const ds = new DataVault({ storage: 'indexeddb' });
 
 ds.registerDefinition({
   key: 'users',
@@ -63,9 +63,9 @@ export function UserList() {
 
 ```typescript
 import { ref, onMounted, onUnmounted } from 'vue';
-import { DataService } from './lib';
+import { DataVault } from './lib';
 
-const ds = new DataService({ storage: 'local' });
+const ds = new DataVault({ storage: 'local' });
 
 ds.registerDefinition({
   key: 'posts',
@@ -92,12 +92,67 @@ export function usePosts() {
 
 ---
 
+## Angular example
+
+```typescript
+// data.service.ts
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { DataVault } from './lib';
+
+@Injectable({ providedIn: 'root' })
+export class AppDataVault implements OnDestroy {
+  private ds = new DataVault({ storage: 'indexeddb' });
+
+  readonly users$ = new BehaviorSubject<any[]>([]);
+
+  constructor() {
+    this.ds.registerDefinition({
+      key: 'users',
+      url: 'https://jsonplaceholder.typicode.com/users',
+      type: 'rest',
+      cacheTTL: 60_000,
+    });
+
+    this.ds.get('users', {
+      id: 'AppDataVault',
+      onUpdate: (data) => this.users$.next(data as any[]),
+    });
+  }
+
+  ngOnDestroy() {
+    this.ds.unsubscribe('users', 'AppDataVault');
+    this.ds.destroy();
+  }
+}
+```
+
+```typescript
+// user-list.component.ts
+import { Component } from '@angular/core';
+import { AppDataVault } from './data.service';
+
+@Component({
+  selector: 'app-user-list',
+  template: `
+    <ul>
+      <li *ngFor="let user of appData.users$ | async">{{ user.name }}</li>
+    </ul>
+  `,
+})
+export class UserListComponent {
+  constructor(public appData: AppDataVault) {}
+}
+```
+
+---
+
 ## Vanilla JS example
 
 ```typescript
-import { DataService } from './lib';
+import { DataVault } from './lib';
 
-const ds = new DataService();
+const ds = new DataVault();
 
 ds.registerDefinition({
   key: 'todo.1',
@@ -120,13 +175,13 @@ ds.get('todo.1', {
 
 ## Singleton pattern (recommended)
 
-Create the `DataService` once and share it across your app. Avoid creating multiple instances with the same storage backend — they won't share cache state.
+Create the `DataVault` once and share it across your app. Avoid creating multiple instances with the same storage backend — they won't share cache state.
 
 ```typescript
 // services/dataService.ts
-import { DataService } from '../lib';
+import { DataVault } from '../lib';
 
-export const ds = new DataService({ storage: 'indexeddb' });
+export const ds = new DataVault({ storage: 'indexeddb' });
 
 // Register all definitions at startup
 ds.registerDefinition({ key: 'users', url: '...', type: 'rest', cacheTTL: 60_000 });

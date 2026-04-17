@@ -1,4 +1,4 @@
-import { DataService } from '../DataService';
+import { DataVault } from '../DataVault';
 import { IApiDefinition } from '../interfaces/IApiDefinition';
 import { IObserver } from '../interfaces/IObserver';
 
@@ -40,11 +40,11 @@ const todoDef: IApiDefinition = {
   },
 };
 
-describe('DataService — JSONPlaceholder integration', () => {
-  let ds: DataService;
+describe('DataVault — JSONPlaceholder integration', () => {
+  let ds: DataVault;
 
   beforeEach(() => {
-    ds = new DataService({ storage: 'memory' });
+    ds = new DataVault({ storage: 'memory' });
   });
 
   afterEach(() => {

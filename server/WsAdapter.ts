@@ -1,6 +1,6 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { IncomingMessage } from 'http';
-import { DataService } from '../core/DataService';
+import { DataVault } from '../core/DataVault';
 
 interface ClientMessage {
   action: 'subscribe' | 'unsubscribe' | 'get' | 'refresh';
@@ -41,7 +41,7 @@ export class WsAdapter {
   private clientIds = new WeakMap<WebSocket, string>();
   private rateLimits = new Map<WebSocket, RateState>();
 
-  constructor(private dataService: DataService) {
+  constructor(private dataService: DataVault) {
     this.wss = new WebSocketServer({ noServer: true });
     this.wss.on('connection', (socket) => this.handleConnection(socket));
   }

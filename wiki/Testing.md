@@ -117,7 +117,7 @@ Unit tests for observer subscription and notification.
 
 ---
 
-### `core/__tests__/DataService.test.ts`
+### `core/__tests__/DataVault.test.ts`
 
 Integration tests using **live requests to `https://jsonplaceholder.typicode.com`**.
 
@@ -161,7 +161,7 @@ Jest is configured in `package.json`:
 ## Running a single suite
 
 ```bash
-npx jest core/__tests__/DataService.test.ts --verbose
+npx jest core/__tests__/DataVault.test.ts --verbose
 npx jest core/cache/__tests__/CacheController.test.ts --verbose
 ```
 

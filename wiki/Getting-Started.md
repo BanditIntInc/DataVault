@@ -5,23 +5,22 @@
 - Node.js 18+
 - npm 9+
 
-## Install dependencies
+## Install
 
 ```bash
-cd DataService
-npm install
+npm install @banditintinc/datavault
 ```
 
 ## Library mode (quickest path)
 
-Import `DataService` directly into your app.
+Import `DataVault` directly into your app.
 
 ### 1. Create a service instance
 
 ```typescript
-import { DataService } from './lib';
+import { DataVault } from '@banditintinc/datavault';
 
-const ds = new DataService({ storage: 'auto' });
+const ds = new DataVault({ storage: 'auto' });
 ```
 
 `storage: 'auto'` picks the best available backend — IndexedDB in the browser, Memory in Node.
@@ -103,9 +102,9 @@ PORT=3000 DEFINITIONS_FILE=./definitions.json STORAGE=memory npm run server
 Output:
 ```
 [Config] Loaded 1 definition(s) from /path/to/definitions.json
-[DataService] HTTP  → http://localhost:3000/api
-[DataService] WS    → ws://localhost:3000/ws
-[DataService] Storage mode: memory
+[DataVault] HTTP  → http://localhost:3000/api
+[DataVault] WS    → ws://localhost:3000/ws
+[DataVault] Storage mode: memory
 ```
 
 ### 3. Fetch via HTTP

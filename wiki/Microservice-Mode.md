@@ -1,6 +1,6 @@
 # Microservice Mode
 
-In microservice mode DataService runs as a standalone server. Any frontend or service connects over HTTP or WebSocket — no shared process required.
+In microservice mode DataVault runs as a standalone server. Any frontend or service connects over HTTP or WebSocket — no shared process required.
 
 ## Starting the server
 
@@ -23,9 +23,9 @@ PORT=8080 DEFINITIONS_FILE=./prod-definitions.json STORAGE=memory npm run server
 Startup output:
 ```
 [Config] Loaded 2 definition(s) from /path/to/definitions.json
-[DataService] HTTP  → http://localhost:3000/api
-[DataService] WS    → ws://localhost:3000/ws
-[DataService] Storage mode: memory
+[DataVault] HTTP  → http://localhost:3000/api
+[DataVault] WS    → ws://localhost:3000/ws
+[DataVault] Storage mode: memory
 ```
 
 ---
@@ -109,7 +109,7 @@ curl http://localhost:3000/api/data/posts
 
 **Response `404`:**
 ```json
-{ "error": "[DataService] No definition registered for key \"unknown\"" }
+{ "error": "[DataVault] No definition registered for key \"unknown\"" }
 ```
 
 ---
@@ -194,7 +194,7 @@ Messages with invalid keys receive an error response and are otherwise ignored.
 sequenceDiagram
     participant C as Client
     participant WS as WsAdapter
-    participant DS as DataService
+    participant DS as DataVault
     participant API as Upstream API
 
     C->>WS: { action: "subscribe", key: "posts" }
@@ -213,7 +213,7 @@ sequenceDiagram
 sequenceDiagram
     participant C as Client
     participant WS as WsAdapter
-    participant DS as DataService
+    participant DS as DataVault
 
     C->>WS: { action: "subscribe", key: "posts" }
     WS->>DS: get("posts", wsObserver)
@@ -228,7 +228,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant API as Upstream (poll/WS)
-    participant DS as DataService
+    participant DS as DataVault
     participant WS as WsAdapter
     participant C1 as Client 1
     participant C2 as Client 2

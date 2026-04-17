@@ -1,6 +1,6 @@
 # Transport Types
 
-DataService supports three upstream transport types, each suited to a different data delivery model.
+DataVault supports three upstream transport types, each suited to a different data delivery model.
 
 ## REST
 
@@ -29,7 +29,7 @@ ds.registerDefinition({
 ```mermaid
 sequenceDiagram
     participant C as Consumer
-    participant DS as DataService
+    participant DS as DataVault
     participant FE as Fetcher
     participant API as REST API
 

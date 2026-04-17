@@ -1,4 +1,4 @@
-# DataService
+# DataVault
 
 A framework-agnostic TypeScript data service that acts as a smart cache and observer hub. Any frontend or backend consumer can ask for a piece of data by key. The service fetches it, caches it, and pushes updates to every registered observer automatically.
 
@@ -24,7 +24,7 @@ The core logic is identical in both modes. Only the transport layer differs.
 |---|---|
 | System overview and diagrams | [[Architecture]] |
 | Getting up and running fast | [[Getting-Started]] |
-| Full DataService public API | [[API-Reference]] |
+| Full DataVault public API | [[API-Reference]] |
 | Defining data sources | [[Definitions]] |
 | Cache internals | [[Cache-Design]] |
 | Storage backends | [[Storage-Adapters]] |
@@ -38,9 +38,9 @@ The core logic is identical in both modes. Only the transport layer differs.
 ## At a glance
 
 ```typescript
-import { DataService } from '@dataservice/core';
+import { DataVault } from '@banditintinc/datavault';
 
-const ds = new DataService({ storage: 'indexeddb' });
+const ds = new DataVault({ storage: 'indexeddb' });
 
 ds.registerDefinition({
   key: 'users',

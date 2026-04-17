@@ -1,7 +1,7 @@
 import { IStorageAdapter } from '../interfaces/IStorageAdapter';
 import { ICacheEntry } from '../interfaces/ICacheEntry';
 
-const DB_NAME = 'DataServiceCache';
+const DB_NAME = 'DataVaultCache';
 const STORE_NAME = 'entries';
 const DB_VERSION = 1;
 

@@ -1,19 +1,19 @@
 # API Reference
 
-## DataService
+## DataVault
 
 The main class. All consumers interact through this.
 
 ```typescript
-import { DataService } from './lib';
+import { DataVault } from './lib';
 
-const ds = new DataService(options?: DataServiceOptions);
+const ds = new DataVault(options?: DataVaultOptions);
 ```
 
 ### Constructor options
 
 ```typescript
-interface DataServiceOptions {
+interface DataVaultOptions {
   storage?: 'session' | 'local' | 'indexeddb' | 'memory' | 'auto';
 }
 ```

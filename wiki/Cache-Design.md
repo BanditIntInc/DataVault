@@ -128,7 +128,7 @@ TTL check: `Date.now() - fetchedAt > ttl`
 
 ```mermaid
 sequenceDiagram
-    participant DS as DataService
+    participant DS as DataVault
     participant CC as CacheController
     participant CMD as GetCommand
     participant AD as IStorageAdapter
@@ -156,7 +156,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant DS as DataService
+    participant DS as DataVault
     participant CC as CacheController
     participant CMD as SetCommand
     participant AD as IStorageAdapter
@@ -205,7 +205,7 @@ flowchart TD
 | `cleared` | All entries removed | — |
 | `invalidated` | Expired entry removed by `invalidateExpired()` | `key` |
 
-`DataService` subscribes to the `invalidated` event and clears all data observers for that key, preventing stale callbacks.
+`DataVault` subscribes to the `invalidated` event and clears all data observers for that key, preventing stale callbacks.
 
 ---
 

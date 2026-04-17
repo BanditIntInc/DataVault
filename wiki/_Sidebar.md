@@ -1,4 +1,4 @@
-## DataService Wiki
+## DataVault Wiki
 
 **[[Home]]**
 

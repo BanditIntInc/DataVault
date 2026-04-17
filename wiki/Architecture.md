@@ -2,7 +2,7 @@
 
 ## Overview
 
-DataService is structured as a layered system. The core logic (fetching, caching, mapping, observing) is completely independent of the deployment target. A thin adapter layer on top exposes it as either an importable library or a running HTTP + WebSocket server.
+DataVault is structured as a layered system. The core logic (fetching, caching, mapping, observing) is completely independent of the deployment target. A thin adapter layer on top exposes it as either an importable library or a running HTTP + WebSocket server.
 
 ## Deployment modes
 
@@ -10,7 +10,7 @@ DataService is structured as a layered system. The core logic (fetching, caching
 
 ```mermaid
 graph TD
-    A[Frontend App<br/>React / Vue / Vanilla / Node] -->|import DataService| DS[DataService Core]
+    A[Frontend App<br/>React / Vue / Vanilla / Node] -->|import DataVault| DS[DataVault Core]
     DS --> DR[DefinitionRegistry]
     DS --> CC[CacheController]
     DS --> OR[ObserverRegistry]
@@ -32,7 +32,7 @@ graph TD
     SRV --> HTTP[HttpAdapter<br/>REST endpoints]
     SRV --> WS[WsAdapter<br/>subscribe / push]
 
-    HTTP --> DS[DataService Core]
+    HTTP --> DS[DataVault Core]
     WS --> DS
 
     DS --> DR[DefinitionRegistry]
@@ -80,7 +80,7 @@ flowchart TD
 
 ```mermaid
 graph LR
-    DS[DataService] --> DR[DefinitionRegistry]
+    DS[DataVault] --> DR[DefinitionRegistry]
     DS --> CC[CacheController]
     DS --> OR[ObserverRegistry]
     DS --> FE[Fetcher]
@@ -101,9 +101,9 @@ graph LR
 ## File structure
 
 ```
-DataService/
+DataVault/
 ├── core/                          Core logic — mode-agnostic
-│   ├── DataService.ts             Main entry point, orchestrates all modules
+│   ├── DataVault.ts             Main entry point, orchestrates all modules
 │   ├── DefinitionRegistry.ts      Stores API definitions by key
 │   ├── ObserverRegistry.ts        Manages per-key observer callbacks
 │   ├── Fetcher.ts                 REST / WebSocket / polling transports
@@ -141,7 +141,7 @@ DataService/
 ```mermaid
 sequenceDiagram
     participant C as Consumer
-    participant DS as DataService
+    participant DS as DataVault
     participant CC as CacheController
     participant FE as Fetcher
     participant MA as Mapper
@@ -170,7 +170,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant DS as DataService
+    participant DS as DataVault
     participant CC as CacheController
     participant EE as CacheEventEmitter
     participant OR as ObserverRegistry

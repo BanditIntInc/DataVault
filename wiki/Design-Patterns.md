@@ -1,6 +1,6 @@
 # Design Patterns
 
-DataService is built on five core design patterns applied consistently throughout the codebase. Each pattern has a specific, non-overlapping role.
+DataVault is built on five core design patterns applied consistently throughout the codebase. Each pattern has a specific, non-overlapping role.
 
 ---
 
@@ -89,7 +89,7 @@ interface ICacheCommand<T = unknown> {
 
 **File:** `core/cache/CacheController.ts`
 
-`CacheController` is the single public surface of the entire cache subsystem. Consumers (including `DataService`) call only this class. It:
+`CacheController` is the single public surface of the entire cache subsystem. Consumers (including `DataVault`) call only this class. It:
 
 1. Instantiates and dispatches commands
 2. Enforces TTL expiry before returning results
@@ -117,7 +117,7 @@ Two independent observer systems serve different purposes.
 
 ### CacheEventEmitter — cache lifecycle events
 
-Notifies internal subscribers (like `DataService`) about cache state changes.
+Notifies internal subscribers (like `DataVault`) about cache state changes.
 
 ```typescript
 type CacheEventType = 'set' | 'hit' | 'miss' | 'invalidated' | 'deleted' | 'cleared';
@@ -127,7 +127,7 @@ interface ICacheObserver {
 }
 ```
 
-`DataService` subscribes to `'invalidated'` events to automatically clear data observers for keys whose cache entries have expired.
+`DataVault` subscribes to `'invalidated'` events to automatically clear data observers for keys whose cache entries have expired.
 
 ### ObserverRegistry — data update subscribers
 
@@ -145,7 +145,7 @@ Uses a `Map<key, Map<id, IObserver>>` structure for O(1) subscribe, unsubscribe,
 ```mermaid
 graph LR
     CC[CacheController] -->|emits events| EE[CacheEventEmitter]
-    EE -->|onCacheEvent| DS[DataService]
+    EE -->|onCacheEvent| DS[DataVault]
     DS -->|notify| OR[ObserverRegistry]
     OR -->|onUpdate| C1[Component A]
     OR -->|onUpdate| C2[Component B]
@@ -164,4 +164,4 @@ The five patterns together enforce all five SOLID principles:
 | **O** — Open/Closed | New storage backend → new adapter class, zero existing changes. New cache operation → new command class, zero existing changes. |
 | **L** — Liskov Substitution | Any `IStorageAdapter` can substitute any other at any call site |
 | **I** — Interface Segregation | `IStorageAdapter` exposes only what all adapters can support; `ICacheCommand` exposes only `execute()` |
-| **D** — Dependency Inversion | `CacheController` depends on `IStorageAdapter`; `DataService` depends on `CacheController` — both are abstractions, never concrete classes |
+| **D** — Dependency Inversion | `CacheController` depends on `IStorageAdapter`; `DataVault` depends on `CacheController` — both are abstractions, never concrete classes |

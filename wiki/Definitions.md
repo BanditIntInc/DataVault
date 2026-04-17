@@ -1,6 +1,6 @@
 # Definitions
 
-An API definition tells DataService how to fetch data for a given key. Register one per data source using `ds.registerDefinition()` or by adding to `definitions.json` in microservice mode.
+An API definition tells DataVault how to fetch data for a given key. Register one per data source using `ds.registerDefinition()` or by adding to `definitions.json` in microservice mode.
 
 ## Schema
 
