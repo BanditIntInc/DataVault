@@ -18,6 +18,7 @@
 - [[Cache-Design]]
 - [[Storage-Adapters]]
 - [[Transport-Types]]
+- [[Minio-Adapter]]
 
 ### Reference
 - [[API-Reference]]

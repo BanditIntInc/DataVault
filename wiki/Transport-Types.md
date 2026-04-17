@@ -1,6 +1,6 @@
 # Transport Types
 
-DataVault supports three upstream transport types, each suited to a different data delivery model.
+DataVault supports four upstream transport types, each suited to a different data delivery model.
 
 ## REST
 
@@ -133,14 +133,106 @@ sequenceDiagram
 
 ---
 
+## MinIO
+
+Fetches an object directly from a MinIO (or S3-compatible) bucket. Ideal for configuration files, datasets, or any JSON stored in object storage.
+
+```typescript
+// Connection config lives on the DataVault instance
+const ds = new DataVault({
+  storage: 'memory',
+  minio: {
+    endPoint: 'play.min.io',
+    port: 9000,
+    useSSL: true,
+    accessKey: 'minioadmin',
+    secretKey: 'minioadmin',
+  }
+});
+
+// Definitions stay clean — no credentials here
+ds.registerDefinition({
+  key: 'userProfiles',
+  type: 'minio',
+  bucket: 'users',
+  objectKey: 'profiles.json',
+  cacheTTL: 300_000,
+});
+```
+
+**Lifecycle:**
+- No connection is opened at `registerDefinition()`
+- On the first `get()` call (cache miss) the object is fetched from the bucket
+- Subsequent `get()` calls return the cached value until TTL expires
+- `refresh()` re-fetches the object from the bucket regardless of cache state
+- Response is parsed as JSON automatically; falls back to raw string if the content is not valid JSON
+
+**MinIO connection config — `IMinioConfig`:**
+
+| Field | Type | Required | Default | Description |
+|---|---|---|---|---|
+| `endPoint` | `string` | Yes | — | MinIO server hostname or IP |
+| `port` | `number` | No | `9000` | Server port |
+| `useSSL` | `boolean` | No | `true` | Enable TLS |
+| `accessKey` | `string` | Yes | — | Access key / username |
+| `secretKey` | `string` | Yes | — | Secret key / password |
+| `region` | `string` | No | — | Bucket region (optional) |
+
+**Config resolution order:**
+
+Connection credentials can be set globally on the `DataVault` instance (recommended) or overridden per-definition. The per-definition `minioConfig` takes precedence if present.
+
+```typescript
+// Global config — used by all minio definitions
+const ds = new DataVault({ storage: 'memory', minio: globalConfig });
+
+// Per-definition override — useful when hitting multiple MinIO instances
+ds.registerDefinition({
+  key: 'externalData',
+  type: 'minio',
+  bucket: 'archive',
+  objectKey: 'snapshot.json',
+  minioConfig: { endPoint: 'other.min.io', port: 9000, useSSL: true, accessKey: 'a', secretKey: 'b' },
+});
+```
+
+**Client caching:** A single `Minio.Client` instance is created per unique `endPoint + port + accessKey` combination and reused across all fetches — no reconnection overhead per `get()` call.
+
+**Options used:** `bucket`, `objectKey`, `minioConfig`, `cacheTTL`, `mapping`, `transform`
+
+> `url`, `method`, `headers`, `body`, and `pollInterval` are ignored for MinIO definitions.
+
+```mermaid
+sequenceDiagram
+    participant C as Consumer
+    participant DS as DataVault
+    participant MA as MinioAdapter
+    participant MB as MinIO Bucket
+
+    C->>DS: get("userProfiles")
+    DS->>MA: fetchObject(definition, config)
+    MA->>MB: getObject("users", "profiles.json")
+    MB-->>MA: ReadableStream
+    MA->>MA: buffer chunks → parse JSON
+    MA-->>DS: parsed data
+    DS->>DS: map + cache
+    DS-->>C: data
+    Note over DS: TTL = 300s
+    C->>DS: get("userProfiles") again within TTL
+    DS-->>C: cached data (no bucket call)
+```
+
+---
+
 ## Comparison
 
-| | REST | WebSocket | Poll |
-|---|---|---|---|
-| **Connection** | Per request | Persistent | Per interval |
-| **Starts at** | First `get()` | `registerDefinition()` | `registerDefinition()` |
-| **Push support** | No | Yes | No |
-| **Auto-reconnect** | N/A | Yes (exp. backoff) | N/A |
-| **Best for** | Infrequent, on-demand data | Real-time live data | Periodically changing data without push support |
-| **Fetch timeout** | 10s | N/A | 10s per request |
-| **Minimum interval** | N/A | N/A | 1000ms |
+| | REST | WebSocket | Poll | MinIO |
+|---|---|---|---|---|
+| **Connection** | Per request | Persistent | Per interval | Per request (client cached) |
+| **Starts at** | First `get()` | `registerDefinition()` | `registerDefinition()` | First `get()` |
+| **Push support** | No | Yes | No | No |
+| **Auto-reconnect** | N/A | Yes (exp. backoff) | N/A | N/A |
+| **Best for** | HTTP APIs | Real-time live data | Polling without push | Object storage (config, datasets) |
+| **Fetch timeout** | 10s | N/A | 10s per request | SDK default |
+| **Minimum interval** | N/A | N/A | 1000ms | N/A |
+| **Credentials** | In `headers` | In `url` | In `headers` | `DataVaultOptions.minio` or `minioConfig` |
