@@ -6,11 +6,11 @@
 npm test
 ```
 
-All 59 tests run and exit with code 0 when everything is healthy.
+All 84 tests run and exit with code 0 when everything is healthy.
 
 ```
-Test Suites: 7 passed, 7 total
-Tests:       59 passed, 59 total
+Test Suites: 9 passed, 9 total
+Tests:       84 passed, 84 total
 ```
 
 ---
@@ -141,6 +141,49 @@ All integration tests have a 15-second timeout to accommodate network latency.
 
 ---
 
+### `core/adapters/__tests__/MinioAdapter.test.ts`
+
+Unit tests for the MinIO adapter in isolation. The `minio` client is fully mocked — no live MinIO server required.
+
+| Test | What it verifies |
+|---|---|
+| Fetches and parses a JSON object | Basic happy path |
+| Fetches and parses a JSON array | Array response |
+| Returns raw string for non-JSON content | Fallback to raw string |
+| Handles multi-chunk streams | Buffer concatenation |
+| Uses per-definition minioConfig over global | Config override priority |
+| Falls back to global config | Default config path |
+| Passes correct bucket and objectKey | Correct call arguments |
+| Defaults port to 9000 and useSSL to true | Default values |
+| Reuses client for same endpoint | Client caching — 1 `new Client()` for 2 fetches |
+| Creates separate clients for different endpoints | Client isolation |
+| Throws when no config is provided | Clear error for missing config |
+| Throws when bucket is missing | Validation |
+| Throws when objectKey is missing | Validation |
+
+---
+
+### `core/__tests__/DataVaultMinio.test.ts`
+
+Unit tests for `DataVault` using the `minio` transport type. The `minio` client is mocked.
+
+| Test | What it verifies |
+|---|---|
+| Fetches and returns parsed JSON | End-to-end minio flow |
+| Returns cached data without re-fetching | `getObject` called once for two `get()` calls |
+| Re-fetches after TTL expires | 1ms TTL + 20ms wait |
+| Notifies observer on first fetch | Observer receives correct payload |
+| Notifies observer again after refresh | Second notification on `refresh()` |
+| Does not notify after unsubscribe | Observer cleanup |
+| Applies mapping to fetched object | Dot-notation mapping works with minio data |
+| Applies transform after fetch | Transform fn receives mapped data |
+| Uses per-definition minioConfig | Override respected at DataVault level |
+| Throws for missing bucket | Validation propagated from adapter |
+| Throws when no MinIO config anywhere | Clear error at DataVault level |
+| Propagates MinIO client errors | `NoSuchKey` and similar errors bubble up |
+
+---
+
 ## Test configuration
 
 Jest is configured in `package.json`:
@@ -162,6 +205,8 @@ Jest is configured in `package.json`:
 
 ```bash
 npx jest core/__tests__/DataVault.test.ts --verbose
+npx jest core/__tests__/DataVaultMinio.test.ts --verbose
+npx jest core/adapters/__tests__/MinioAdapter.test.ts --verbose
 npx jest core/cache/__tests__/CacheController.test.ts --verbose
 ```
 

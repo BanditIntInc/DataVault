@@ -1,6 +1,6 @@
 {
   "name": "@banditintinc/datavault",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Framework-agnostic smart cache and observer data service. Fetch, cache, map, and broadcast any data source to any consumer — as a library or a microservice.",
   "keywords": [
     "cache",
