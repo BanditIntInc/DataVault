@@ -1,7 +1,10 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['lib/index.ts'],
+  entry: {
+    index: 'lib/index.ts',
+    minio: 'lib/minio.ts',
+  },
   format: ['cjs', 'esm'],
   dts: true,
   clean: true,

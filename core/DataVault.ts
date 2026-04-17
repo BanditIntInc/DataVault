@@ -1,4 +1,4 @@
-import { IApiDefinition, IMinioConfig } from './interfaces/IApiDefinition';
+import { IApiDefinition, IMinioConfig, IMinioFetcher } from './interfaces/IApiDefinition';
 import { IObserver } from './interfaces/IObserver';
 import { CacheController } from './cache/CacheController';
 import { ICacheObserver } from './cache/interfaces/ICacheObserver';
@@ -11,6 +11,7 @@ import { StorageFactory, StorageType } from './cache/factory/StorageFactory';
 export interface DataVaultOptions {
   storage?: StorageType | 'auto';
   minio?: IMinioConfig;
+  minioAdapter?: IMinioFetcher;
 }
 
 export class DataVault {
@@ -27,7 +28,7 @@ export class DataVault {
         : StorageFactory.create(options.storage);
 
     this.cache = new CacheController(adapter);
-    this.fetcher = new Fetcher(options.minio);
+    this.fetcher = new Fetcher(options.minio, options.minioAdapter);
 
     // Held so it can be unsubscribed in destroy()
     this.cacheObserver = {

@@ -1,6 +1,7 @@
 import { Readable } from 'stream';
 import { DataVault } from '../DataVault';
 import { IMinioConfig } from '../interfaces/IApiDefinition';
+import { MinioAdapter } from '../adapters/MinioAdapter';
 
 jest.mock('minio');
 
@@ -27,7 +28,7 @@ beforeEach(() => {
   (Minio.Client as jest.Mock).mockImplementation(() => ({
     getObject: mockGetObject,
   }));
-  ds = new DataVault({ storage: 'memory', minio: MINIO_CONFIG });
+  ds = new DataVault({ storage: 'memory', minio: MINIO_CONFIG, minioAdapter: new MinioAdapter() });
 });
 
 afterEach(() => {
@@ -173,10 +174,10 @@ describe('DataVault — minio transport', () => {
     await expect(ds.get('obj')).rejects.toThrow('"bucket" and "objectKey"');
   });
 
-  it('throws when no MinIO config anywhere', async () => {
+  it('throws when no minioAdapter is registered', async () => {
     const noCfgDs = new DataVault({ storage: 'memory' });
     noCfgDs.registerDefinition({ key: 'obj', type: 'minio', bucket: 'b', objectKey: 'o.json' });
-    await expect(noCfgDs.get('obj')).rejects.toThrow('MinIO config required');
+    await expect(noCfgDs.get('obj')).rejects.toThrow('MinIO adapter not registered');
     noCfgDs.destroy();
   });
 

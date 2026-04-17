@@ -1,5 +1,4 @@
-import { IApiDefinition, IMinioConfig } from './interfaces/IApiDefinition';
-import { MinioAdapter } from './adapters/MinioAdapter';
+import { IApiDefinition, IMinioConfig, IMinioFetcher } from './interfaces/IApiDefinition';
 
 export type FetchCallback = (data: unknown) => void;
 
@@ -13,15 +12,20 @@ export class Fetcher {
   private polls = new Map<string, ReturnType<typeof setInterval>>();
   private reconnectTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private destroyed = false;
-  private minioAdapter = new MinioAdapter();
 
-  constructor(private minioConfig?: IMinioConfig) {}
+  constructor(private minioConfig?: IMinioConfig, private minioAdapter?: IMinioFetcher) {}
 
   async fetchOnce(definition: IApiDefinition): Promise<unknown> {
     if (definition.type === 'rest' || definition.type === 'poll') {
       return this.fetchRest(definition);
     }
     if (definition.type === 'minio') {
+      if (!this.minioAdapter) {
+        throw new Error(
+          `[datavault] MinIO adapter not registered. ` +
+          `Import MinioAdapter from '@banditintinc/datavault/minio' and pass it as DataVaultOptions.minioAdapter.`
+        );
+      }
       return this.minioAdapter.fetchObject(definition, this.minioConfig);
     }
     throw new Error(`fetchOnce is not supported for transport type "${definition.type}". Use watch() instead.`);

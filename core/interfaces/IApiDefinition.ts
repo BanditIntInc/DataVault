@@ -10,6 +10,10 @@ export interface IMinioConfig {
   region?: string;
 }
 
+export interface IMinioFetcher {
+  fetchObject(definition: IApiDefinition, globalConfig?: IMinioConfig): Promise<unknown>;
+}
+
 export interface IApiDefinition {
   key: string;
   type: TransportType;
