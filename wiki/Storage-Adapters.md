@@ -130,7 +130,7 @@ Priority: `IndexedDB` → `LocalStorage` → `SessionStorage` → `MemoryAdapter
 ### Using StorageFactory directly
 
 ```typescript
-import { StorageFactory } from './lib';
+import { StorageFactory } from '@banditintinc/datavault';
 
 const adapter = StorageFactory.createBestAvailable();
 const cache = new CacheController(adapter);
@@ -143,7 +143,7 @@ const cache = new CacheController(adapter);
 Implement `IStorageAdapter` and register it manually:
 
 ```typescript
-import { IStorageAdapter, ICacheEntry, CacheController } from './core/cache';
+import { IStorageAdapter, ICacheEntry, CacheController } from '@banditintinc/datavault';
 
 class RedisAdapter implements IStorageAdapter {
   async get(key: string): Promise<ICacheEntry | null> { /* ... */ }

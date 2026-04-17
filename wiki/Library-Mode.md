@@ -11,9 +11,9 @@ npm install   # from the DataVault directory
 ## Import
 
 ```typescript
-import { DataVault } from './lib';
+import { DataVault } from '@banditintinc/datavault';
 // or directly:
-import { DataVault } from './core/DataVault';
+import { DataVault } from '@banditintinc/datavault';
 ```
 
 ## Setup
@@ -30,7 +30,7 @@ const ds = new DataVault({ storage: 'auto' });
 
 ```typescript
 import { useEffect, useState } from 'react';
-import { DataVault } from './lib';
+import { DataVault } from '@banditintinc/datavault';
 
 const ds = new DataVault({ storage: 'indexeddb' });
 
@@ -63,7 +63,7 @@ export function UserList() {
 
 ```typescript
 import { ref, onMounted, onUnmounted } from 'vue';
-import { DataVault } from './lib';
+import { DataVault } from '@banditintinc/datavault';
 
 const ds = new DataVault({ storage: 'local' });
 
@@ -98,7 +98,7 @@ export function usePosts() {
 // data.service.ts
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { DataVault } from './lib';
+import { DataVault } from '@banditintinc/datavault';
 
 @Injectable({ providedIn: 'root' })
 export class AppDataVault implements OnDestroy {
@@ -150,7 +150,7 @@ export class UserListComponent {
 ## Vanilla JS example
 
 ```typescript
-import { DataVault } from './lib';
+import { DataVault } from '@banditintinc/datavault';
 
 const ds = new DataVault();
 
@@ -179,7 +179,7 @@ Create the `DataVault` once and share it across your app. Avoid creating multipl
 
 ```typescript
 // services/dataService.ts
-import { DataVault } from '../lib';
+import { DataVault } from '@banditintinc/datavault';
 
 export const ds = new DataVault({ storage: 'indexeddb' });
 

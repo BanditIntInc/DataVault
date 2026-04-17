@@ -115,7 +115,7 @@ flowchart LR
 `Mapper` is a static utility you can use independently of `DataVault`:
 
 ```typescript
-import { Mapper } from './core/Mapper';
+import { Mapper } from '@banditintinc/datavault';
 
 const raw = { user: { profile: { name: 'Alice', age: 30 } } };
 

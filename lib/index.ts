@@ -4,4 +4,8 @@ export type { IApiDefinition, TransportType, HttpMethod } from '../core/interfac
 export type { IObserver } from '../core/interfaces/IObserver';
 export { StorageFactory } from '../core/cache/factory/StorageFactory';
 export type { StorageType } from '../core/cache/factory/StorageFactory';
+export { Mapper } from '../core/Mapper';
+export { CacheController } from '../core/cache/CacheController';
+export type { IStorageAdapter } from '../core/cache/interfaces/IStorageAdapter';
+export type { ICacheEntry } from '../core/cache/interfaces/ICacheEntry';
 export { VERSION, LICENSE, AUTHOR } from '../core/version';

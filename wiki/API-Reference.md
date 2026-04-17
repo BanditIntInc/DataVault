@@ -5,7 +5,7 @@
 The main class. All consumers interact through this.
 
 ```typescript
-import { DataVault } from './lib';
+import { DataVault } from '@banditintinc/datavault';
 
 const ds = new DataVault(options?: DataVaultOptions);
 ```
@@ -141,7 +141,7 @@ The `id` is used to deduplicate registrations and to target `unsubscribe()` call
 Direct access to storage backend creation if you need to manage the adapter yourself.
 
 ```typescript
-import { StorageFactory } from './lib';
+import { StorageFactory } from '@banditintinc/datavault';
 
 // Explicit type
 const adapter = StorageFactory.create('indexeddb');
